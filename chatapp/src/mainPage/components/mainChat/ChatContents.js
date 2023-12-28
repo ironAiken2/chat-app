@@ -1,18 +1,24 @@
 import styled from "styled-components";
 import { useEffect, useRef } from "react";
 
-const ChatContents = ({ messages }) => {
+const ChatContents = ({ messages, id }) => {
   const scrollEndRef = useRef(null);
   useEffect(() => {
     scrollEndRef.current.scrollIntoView({ behavior: "smooth" });
   });
+  // todo : styled-components props 전달 로직 수정 (간결화)
   return (
     <ContentWrapper>
       {messages.map((message, index) => {
         return (
-          <TextBoxWrapper key={index}>
-            <TextBox>{message["message"]}</TextBox>
-            <TextBox>{message["session_id"]}</TextBox>
+          <TextBoxWrapper
+            key={index}
+            sender={message["session_id"]}
+            receiver={id}
+          >
+            <TextBox sender={message["session_id"]} receiver={id}>
+              {message["message"]}
+            </TextBox>
           </TextBoxWrapper>
         );
       })}
@@ -33,18 +39,23 @@ const ContentWrapper = styled.div`
 `;
 const TextBoxWrapper = styled.div`
   display: flex;
-  padding: 10px;
-  background-color: #ffffff;
-  width: fit-content;
   margin-bottom: 10px;
-  border-radius: 10px 10px 10px 0;
+  justify-content: ${(props) =>
+    props.sender === props.receiver ? "flex-end" : "flex-start"};
 `;
+//329993
+//ffffff
 const TextBox = styled.div`
   display: flex;
   flex-direction: column;
-  background-color: #ffffff;
+  background-color: ${(props) =>
+    props.sender === props.receiver ? "#329993" : "#ffffff"};
+  color: ${(props) =>
+    props.receiver === props.sender ? "#ffffff" : "#000000"};
   width: fit-content;
   max-width: 300px;
+  padding: 10px;
+  border-radius: 10px 10px 10px 0;
 `;
 
 export default ChatContents;

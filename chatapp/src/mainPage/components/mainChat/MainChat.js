@@ -4,8 +4,6 @@ import ChatSender from "./ChatSender";
 import { useState, useEffect } from "react";
 import fetchSession from "./utils/fetchSession";
 
-// my text bg color : 329993
-// text color : FFFFFF
 const MainChat = () => {
   const [messages, setMessages] = useState([]);
   const [sessionId, setSessionId] = useState(null);
@@ -40,7 +38,7 @@ const MainChat = () => {
 
   return (
     <MainChatContainer>
-      <ChatContents messages={messages} />
+      <ChatContents messages={messages} id={sessionId} />
       <ChatSender ws={ws} />
     </MainChatContainer>
   );
