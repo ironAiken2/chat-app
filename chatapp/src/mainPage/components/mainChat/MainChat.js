@@ -12,9 +12,12 @@ const MainChat = () => {
   const [ws, setWs] = useState(null);
 
   useEffect(() => {
-    // session api 호출
-    fetchSession();
-    setSessionId(document.cookie.split("=")[1]);
+    fetchSession(setSessionId);
+  }, []);
+
+  useEffect(() => {
+    // 세션 아이디 의존성 추가
+    if (!sessionId) return;
     // WebSocket 연결
     const newWs = new WebSocket("ws://localhost:8080/chat");
     setWs(newWs);
@@ -24,18 +27,16 @@ const MainChat = () => {
     };
     // 메시지 수신 시 state 업데이트
     newWs.onmessage = (event) => {
-      const newMessage = event.data;
+      const newMessage = JSON.parse(event.data);
       setMessages((m) => [...m, newMessage]);
     };
 
     // 브라우저 종료 및 새로고침 시 연결 종료
-    (() => {
-      window.addEventListener("beforeunload", () => {
-        newWs.send(false);
-        newWs.close();
-      });
-    })();
-  }, []);
+    window.addEventListener("beforeunload", () => {
+      newWs.send(false);
+      newWs.close();
+    });
+  }, [sessionId]);
 
   return (
     <MainChatContainer>

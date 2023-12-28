@@ -1,10 +1,11 @@
 import axios from "axios";
 
-const fetchSession = async () => {
+const fetchSession = async (setSessionId) => {
   try {
     const response = await axios.get("http://localhost:8080", {
       withCredentials: true,
     });
+    setSessionId(document.cookie.split("=")[1]);
   } catch (error) {
     console.log(error);
   }

@@ -11,7 +11,8 @@ const ChatContents = ({ messages }) => {
       {messages.map((message, index) => {
         return (
           <TextBoxWrapper key={index}>
-            <TextBox>{message}</TextBox>
+            <TextBox>{message["message"]}</TextBox>
+            <TextBox>{message["session_id"]}</TextBox>
           </TextBoxWrapper>
         );
       })}
