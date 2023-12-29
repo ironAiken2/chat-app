@@ -10,8 +10,8 @@ async def session_handler(request):
     session = await get_session(request)
     session['session_id'] = str(uuid.uuid4())
 
-    # Problem: CORS error (fixed) due to different domain (server : localhost:8080, client : localhost:3000)
-    response = aiohttp.web.Response(headers={'Access-Control-Allow-Origin': 'http://localhost:3000',
+    # Problem: CORS error (fixed) due to different domain
+    response = aiohttp.web.Response(headers={'Access-Control-Allow-Origin': 'http://localhost',
                                              'Access-Control-Allow-Credentials': 'true'})
     response.set_cookie('session_id', session['session_id'])
     print("created: " , response.cookies)
@@ -47,7 +47,6 @@ async def websocket_handler(request):
 
         await app['redis'].publish('chat', data)
         await throw_message(app['pubsub'], app['websockets'])
-        
 
     return ws
 
@@ -58,8 +57,8 @@ async def on_shutdown(app):
 
 async def init_app():
     app = aiohttp.web.Application()
-    redis_pool = redis.ConnectionPool(host='localhost', port=6379, db=0)
-    
+    redis_pool = redis.ConnectionPool(host='redis', port=6379, db=0)
+
     routes = [
         aiohttp.web.get('/', session_handler),
         aiohttp.web.get('/chat', websocket_handler)
